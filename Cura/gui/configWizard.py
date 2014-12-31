@@ -431,6 +431,8 @@ class MachineSelectPage(InfoPage):
 		self.LulzbotTazRadio.Bind(wx.EVT_RADIOBUTTON, self.OnLulzbotSelect)
 		self.LulzbotMiniRadio = self.AddRadioButton("Lulzbot Mini")
 		self.LulzbotMiniRadio.Bind(wx.EVT_RADIOBUTTON, self.OnLulzbotSelect)
+		self.Makerbot5thGenRadio = self.AddRadioButton("Makerbot 5th Gen")
+		self.Makerbot5thGenRadio.Bind(wx.EVT_RADIOBUTTON, self.OnMakerbot5thGenRadio)
 		self.OtherRadio = self.AddRadioButton(_("Other (Ex: RepRap, MakerBot, Witbox)"))
 		self.OtherRadio.Bind(wx.EVT_RADIOBUTTON, self.OnOtherSelect)
 		self.AddSeperator()
@@ -454,6 +456,9 @@ class MachineSelectPage(InfoPage):
 
 	def OnLulzbotSelect(self, e):
 		wx.wizard.WizardPageSimple.Chain(self, self.GetParent().lulzbotReadyPage)
+
+	def OnMakerbot5thGenRadio(self, e):
+		wx.wizard.WizardPageSimple.Chain(self, self.GetParent().makerbot5thGenReadyPage)
 
 	def OnOtherSelect(self, e):
 		wx.wizard.WizardPageSimple.Chain(self, self.GetParent().otherMachineSelectPage)
@@ -535,6 +540,23 @@ class MachineSelectPage(InfoPage):
 			profile.putMachineSetting('extruder_head_size_max_x', '0.0')
 			profile.putMachineSetting('extruder_head_size_max_y', '0.0')
 			profile.putMachineSetting('extruder_head_size_height', '0.0')
+		elif self.Makerbot5thGenRadio.GetValue():
+			profile.putMachineSetting('machine_width', '252')
+			profile.putMachineSetting('machine_depth', '199')
+			profile.putMachineSetting('machine_height', '150')
+			profile.putMachineSetting('machine_name', 'Makerbot Replicator 5th Gen')
+			profile.putMachineSetting('machine_type', 'makerbot5thgen')
+			profile.putMachineSetting('machine_center_is_zero', 'False')
+			profile.putMachineSetting('gcode_flavor', 'Makerbot 5th Gen')
+			profile.putProfileSetting('nozzle_size', '0.4')
+			profile.putMachineSetting('extruder_head_size_min_x', '75.0')
+			profile.putMachineSetting('extruder_head_size_min_y', '18.0')
+			profile.putMachineSetting('extruder_head_size_max_x', '18.0')
+			profile.putMachineSetting('extruder_head_size_max_y', '35.0')
+			profile.putMachineSetting('extruder_head_size_height', '55.0')
+			profile.putMachineSetting('has_heated_bed', 'False')
+			profile.putMachineSetting('extruder_amount', '1')
+			profile.putProfileSetting('retraction_enable', 'True')
 		else:
 			profile.putMachineSetting('machine_width', '80')
 			profile.putMachineSetting('machine_depth', '80')
@@ -1013,6 +1035,12 @@ class LulzbotReadyPage(InfoPage):
 		self.AddText(_('Cura is now ready to be used with your Lulzbot.'))
 		self.AddSeperator()
 
+class Makerbot5thGenReadyPage(InfoPage):
+	def __init__(self, parent):
+		super(Makerbot5thGenReadyPage, self).__init__(parent, _("Makerbot Replicator 5th Generation"))
+		self.AddText(_('Cura is now ready to be used with your Makerbot 5th Gen.'))
+		self.AddSeperator()
+
 class ConfigWizard(wx.wizard.Wizard):
 	def __init__(self, addNew = False):
 		super(ConfigWizard, self).__init__(None, -1, _("Configuration Wizard"))
@@ -1041,6 +1069,7 @@ class ConfigWizard(wx.wizard.Wizard):
 
 		self.ultimaker2ReadyPage = Ultimaker2ReadyPage(self)
 		self.lulzbotReadyPage = LulzbotReadyPage(self)
+		self.makerbot5thGenReadyPage = Makerbot5thGenReadyPage(self)
 
 		wx.wizard.WizardPageSimple.Chain(self.firstInfoPage, self.machineSelectPage)
 		#wx.wizard.WizardPageSimple.Chain(self.machineSelectPage, self.ultimaker2ReadyPage)
