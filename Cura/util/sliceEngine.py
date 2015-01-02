@@ -569,7 +569,7 @@ class Engine(object):
 			settings['gcodeFlavor'] = 1
 		elif profile.getMachineSetting('gcode_flavor') == 'MakerBot':
 			settings['gcodeFlavor'] = 2
-		elif profile.getMachineSetting('gcode_flavor') == 'MakerBot 5th Gen':
+		elif profile.getMachineSetting('gcode_flavor') == 'Makerbot 5th Gen':
 			settings['gcodeFlavor'] = 6
 		elif profile.getMachineSetting('gcode_flavor') == 'BFB':
 			settings['gcodeFlavor'] = 3

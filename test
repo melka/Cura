@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+export BUILD_NAME=15.01-RC5-Makerbot
+TARGET=${1:-none}
+
+if [ -z `which make` ]; then
+    MAKE=mingw32-make
+else
+    MAKE=make
+fi
+
+if [ "$TARGET" = "none" ]; then
+    printf '\e[1;41mNO TARGET\e[0m\n'
+    exit 0
+fi
+
+if [ "$TARGET" = "cura" ]; then
+    printf '\e[1;44mLAUNCHING CURA\e[0m\n'
+    pythonw -m Cura.cura tests/20mmbox.stl --ini tests/config.ini
+    exit 0
+fi
+
+if [ "$TARGET" = "engine" ]; then
+    printf '\e[1;44mBUILDING CURA ENGINE\e[0m\n'
+    rm -rf CuraEngine
+    $MAKE -j4 -C ../CuraEngine-${BUILD_NAME} VERSION=${BUILD_NAME} clean
+    $MAKE -j4 -C ../CuraEngine-${BUILD_NAME} VERSION=${BUILD_NAME}
+    printf '\e[1;44mSLICING OBJECT\e[0m\n'
+    pythonw -m Cura.cura tests/20mmbox.stl --ini tests/config.ini --slice
+    printf '\e[1;44mSLICING DONE\e[0m\n'
+    exit 0
+fi

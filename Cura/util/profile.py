@@ -1316,8 +1316,22 @@ def getAlterationFileContents(filename, extruderCount = 1):
 					t = temp
 					if n > 0 and getProfileSettingFloat('print_temperature%d' % (n+1)) > 0:
 						t = getProfileSettingFloat('print_temperature%d' % (n+1))
-					prefix += 'M109 T%d S%f\n' % (n, t)
-				prefix += 'T0\n'
+					if getMachineSetting('gcode_flavor') == 'Makerbot 5th Gen':
+						prefix += '[\n'
+						prefix += '  {\n'
+						prefix += '    "command": {\n'
+						prefix += '      "function": "set_toolhead_temperature",\n'
+						prefix += '      "parameters": {\n'
+						prefix += '        "temperature": %d\n' % t
+						prefix += '      },\n'
+						prefix += '      "metadata": {},\n'
+						prefix += '      "tags": []\n'
+						prefix += '    }\n'
+						prefix += '  },'
+					else:
+						prefix += 'M109 T%d S%f\n' % (n, t)
+				if getMachineSetting('gcode_flavor') != 'Makerbot 5th Gen':
+					prefix += 'T0\n'
 			else:
 				prefix += 'M109 S%f\n' % (temp)
 	elif filename == 'end.gcode':
