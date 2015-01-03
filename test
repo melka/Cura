@@ -23,8 +23,8 @@ fi
 if [ "$TARGET" = "engine" ]; then
     printf '\e[1;44mBUILDING CURA ENGINE\e[0m\n'
     rm -rf CuraEngine
-    $MAKE -j4 -C ../CuraEngine-${BUILD_NAME} VERSION=${BUILD_NAME} clean
-    $MAKE -j4 -C ../CuraEngine-${BUILD_NAME} VERSION=${BUILD_NAME}
+    $MAKE -j4 -C ../CuraEngine-Makerbot VERSION=${BUILD_NAME} clean
+    $MAKE -j4 -C ../CuraEngine-Makerbot VERSION=${BUILD_NAME}
     printf '\e[1;44mSLICING OBJECT\e[0m\n'
     pythonw -m Cura.cura tests/20mmbox.stl --ini tests/config.ini --slice
     printf '\e[1;44mSLICING DONE\e[0m\n'

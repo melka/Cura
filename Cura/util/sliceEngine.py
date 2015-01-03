@@ -31,7 +31,7 @@ def getEngineFilename():
 	:return: The full path to the engine executable.
 	"""
 	base_search_path = os.path.dirname(inspect.getfile(getEngineFilename))
-	search_filename = 'CuraEngine-15.01-RC5-Makerbot'
+	search_filename = 'CuraEngine'
 	if platform.system() == 'Windows':
 		search_filename += '.exe'
 		if version.isDevVersion() and os.path.exists('C:/Software/Cura_SteamEngine/_bin/Release/Cura_SteamEngine.exe'):
@@ -40,7 +40,10 @@ def getEngineFilename():
 		full_filename = os.path.abspath(os.path.join(base_search_path, '/'.join(['..'] * n), search_filename))
 		if os.path.isfile(full_filename):
 			return full_filename
-		full_filename = os.path.abspath(os.path.join(base_search_path, '/'.join(['..'] * n), 'CuraEngine-15.01-RC5-Makerbot', search_filename))
+		full_filename = os.path.abspath(os.path.join(base_search_path, '/'.join(['..'] * n), 'CuraEngine', search_filename))
+		if os.path.isfile(full_filename):
+			return full_filename
+		full_filename = os.path.abspath(os.path.join(base_search_path, '/'.join(['..'] * n), 'CuraEngine-Makerbot', search_filename))
 		if os.path.isfile(full_filename):
 			return full_filename
 	if os.path.isfile('/usr/bin/CuraEngine'):
@@ -404,11 +407,11 @@ class Engine(object):
 			returnCode = self._process.wait()
 			logThread.join()
 			if returnCode == 0:
-				self._result.setFinished(True)
 				plugin_error = pluginInfo.runPostProcessingPlugins(self._result)
 				if plugin_error is not None:
 					print plugin_error
 					self._result.addLog(plugin_error)
+				self._result.setFinished(True)
 				self._callback(1.0)
 			else:
 				for line in self._result.getLog():
