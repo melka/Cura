@@ -88,6 +88,16 @@ class engineResultView(object):
 			viewZ = (layerNr - 1) * profile.getProfileSettingFloat('layer_height') + profile.getProfileSettingFloat('bottom_thickness')
 		self._parent._viewTarget[2] = viewZ
 		msize = max(profile.getMachineSettingFloat('machine_width'), profile.getMachineSettingFloat('machine_depth'))
+
+		color_black		= [0.1765, 0.1765, 0.1765, 1]
+		color_red		= [0.9765, 0.5686, 0.3411, 1]
+		color_green 	= [0.5020, 0.7882, 0.6000, 1]
+		color_yellow	= [1.0000, 0.8000, 0.4000, 1]
+		color_blue		= [0.4000, 0.6000, 0.8000, 1]
+		color_magenta	= [0.8000, 0.6000, 0.8000, 1]
+		color_cyan		= [0.4000, 0.8000, 0.8000, 1]
+		color_white		= [0.9255, 0.9255, 0.9255, 1]
+
 		lineTypeList = [
 			('inset0',     'WALL-OUTER', [1,0,0,1]),
 			('insetx',     'WALL-INNER', [0,1,0,1]),

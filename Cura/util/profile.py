@@ -1194,7 +1194,7 @@ def getGCodeExtension():
 	if getMachineSetting('gcode_flavor') == 'BFB':
 		return '.bfb'
 	if getMachineSetting('gcode_flavor') == 'Makerbot 5th Gen':
-		return '.jsontoolpath'
+		return '.makerbot'
 	return '.gcode'
 
 #########################################################
@@ -1318,19 +1318,7 @@ def getAlterationFileContents(filename, extruderCount = 1):
 					t = temp
 					if n > 0 and getProfileSettingFloat('print_temperature%d' % (n+1)) > 0:
 						t = getProfileSettingFloat('print_temperature%d' % (n+1))
-					if getMachineSetting('gcode_flavor') == 'Makerbot 5th Gen':
-						prefix += '[\n'
-						prefix += '  {\n'
-						prefix += '    "command": {\n'
-						prefix += '      "function": "set_toolhead_temperature",\n'
-						prefix += '      "parameters": {\n'
-						prefix += '        "temperature": %d\n' % t
-						prefix += '      },\n'
-						prefix += '      "metadata": {},\n'
-						prefix += '      "tags": []\n'
-						prefix += '    }\n'
-						prefix += '  },'
-					else:
+					if getMachineSetting('gcode_flavor') != 'Makerbot 5th Gen':
 						prefix += 'M109 T%d S%f\n' % (n, t)
 				if getMachineSetting('gcode_flavor') != 'Makerbot 5th Gen':
 					prefix += 'T0\n'

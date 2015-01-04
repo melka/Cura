@@ -28,7 +28,7 @@ http://stackoverflow.com/questions/2411031/how-do-i-clone-into-a-non-empty-direc
 git init
 git remote add origin https://github.com/daid/Cura
 git fetch
-git checkout 15.01-RC5 -b 15.01-RC5-Makerbot
+git checkout 15.01-RC6 -b 15.01-RC6-Makerbot
 
 
 wxPython
@@ -46,6 +46,7 @@ Create file */Users/melka/Drive/ESAAA/Projets/Cura-15.01-RC5-Makerbot/bin/python
     export PYTHONHOME=$ENV
     exec $PYTHON "$@"
 
+chmod +x pythonw
 [quit terminal and reopen]
 
 cd /Users/melka/Drive/ESAAA/Projets/Cura-15.01-RC5-Makerbot

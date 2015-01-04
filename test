@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export BUILD_NAME=15.01-RC5-Makerbot
+export BUILD_NAME=15.01-RC6-Makerbot
 TARGET=${1:-none}
 
 if [ -z `which make` ]; then
@@ -17,6 +17,12 @@ fi
 if [ "$TARGET" = "cura" ]; then
     printf '\e[1;44mLAUNCHING CURA\e[0m\n'
     pythonw -m Cura.cura tests/20mmbox.stl --ini tests/config.ini
+    exit 0
+fi
+
+if [ "$TARGET" = "slice" ]; then
+    pythonw -m Cura.cura tests/20mmbox.stl --ini tests/config.ini --slice
+    printf '\e[1;44mSLICING DONE\e[0m\n'
     exit 0
 fi
 
