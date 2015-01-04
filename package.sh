@@ -222,7 +222,7 @@ if [ "$BUILD_TARGET" = "darwin" ]; then
     	if [ $? != 0 ]; then echo "Failed to build CuraEngine"; exit 1; fi
 	fi
 
-	cp CuraEngine/CuraEngine-${BUILD_NAME} scripts/darwin/dist/Cura.app/Contents/Resources/CuraEngine
+	cp CuraEngine/CuraEngine scripts/darwin/dist/Cura.app/Contents/Resources/CuraEngine
 
 	cd scripts/darwin
 
