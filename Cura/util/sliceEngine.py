@@ -509,6 +509,13 @@ class Engine(object):
 			'extruderOffset[3].X': int(profile.getMachineSettingFloat('extruder_offset_x3') * 1000),
 			'extruderOffset[3].Y': int(profile.getMachineSettingFloat('extruder_offset_y3') * 1000),
 			'fixHorrible': 0,
+
+			#Adding temperature settings to the settings passed to CuraEngine
+			'printTemperature': int(profile.getProfileSettingFloat('print_temperature')),
+			'printTemperature2': int(profile.getProfileSettingFloat('print_temperature2')),
+			'printTemperature3': int(profile.getProfileSettingFloat('print_temperature3')),
+			'printTemperature4': int(profile.getProfileSettingFloat('print_temperature4')),
+			'printBedTemperature': int(profile.getProfileSettingFloat('print_bed_temperature')),
 		}
 		fanFullHeight = int(profile.getProfileSettingFloat('fan_full_height') * 1000)
 		settings['fanFullOnLayerNr'] = (fanFullHeight - settings['initialLayerThickness'] - 1) / settings['layerThickness'] + 1
@@ -575,6 +582,8 @@ class Engine(object):
 			settings['gcodeFlavor'] = 4
 		elif profile.getMachineSetting('gcode_flavor') == 'RepRap (Volumetric)':
 			settings['gcodeFlavor'] = 5
+		elif profile.getMachineSetting('gcode_flavor') == 'Makerbot 5th Gen':
+			settings['gcodeFlavor'] = 6
 		if profile.getProfileSetting('spiralize') == 'True':
 			settings['spiralizeMode'] = 1
 		if profile.getProfileSetting('simple_mode') == 'True':

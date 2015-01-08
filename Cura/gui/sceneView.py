@@ -9,6 +9,8 @@ import threading
 import math
 import sys
 import cStringIO as StringIO
+import zipfile
+import shutil
 
 import OpenGL
 OpenGL.ERROR_CHECKING = False
@@ -254,7 +256,7 @@ class SceneView(openglGui.glGuiPanel):
 				else:
 					drive = drives[0]
 				filename = self._scene._objectList[0].getName() + profile.getGCodeExtension()
-				
+
 				#check if the file is part of the root folder. If so, create folders on sd card to get the same folder hierarchy.
 				repDir = profile.getPreference("sdcard_rootfolder")
 				if os.path.exists(repDir) and os.path.isdir(repDir):
@@ -342,6 +344,46 @@ class SceneView(openglGui.glGuiPanel):
 					fdst.write(buf)
 					self.printButton.setProgressBar(read_pos / size)
 					self._queueRefresh()
+
+			if profile.getMachineSetting('gcode_flavor') == 'Makerbot 5th Gen':
+				#create path for the files
+				basepath = os.path.splitext(targetFilename)[0]
+				outputdir = basepath+'.tmp/'
+				jsonpath = outputdir+'print.jsontoolpath'
+				metapath = outputdir+'meta.json'
+				zippath = basepath+'.makerbot'
+
+				#create tmp folder
+				if not os.path.exists(outputdir):
+					os.makedirs(outputdir)
+
+				datain = open(targetFilename,'r')
+				jsonout = open(jsonpath, 'wb')
+				metaout = open(metapath, 'wb')
+				writemeta = False
+				for line in datain.readlines():
+					if line != '\n':
+						if writemeta == True:
+							metaout.write(line)
+						else:
+							jsonout.write(line)
+					if line == ']\n':
+						writemeta = True
+				datain.close()
+				jsonout.close()
+				metaout.close()
+
+				#create zip archive and add files
+				zipf = zipfile.ZipFile(zippath, 'w')
+				zipf.write(jsonpath,'print.jsontoolpath')
+				zipf.write(metapath,'meta.json')
+				#add default thumbnails to zip archive
+				zipf.write(os.path.normpath(os.path.join(resources.resourceBasePath, 'makerbot5thgen', 'thumbnail_55x40.png')),'thumbnail_55x40.png')
+				zipf.write(os.path.normpath(os.path.join(resources.resourceBasePath, 'makerbot5thgen', 'thumbnail_110x80.png')),'thumbnail_110x80.png')
+				zipf.write(os.path.normpath(os.path.join(resources.resourceBasePath, 'makerbot5thgen', 'thumbnail_320x200.png')),'thumbnail_320x200.png')
+				zipf.close()
+				#remove tmp folder
+				shutil.rmtree(outputdir)
 		except:
 			import sys, traceback
 			traceback.print_exc()

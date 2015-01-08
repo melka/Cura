@@ -11,6 +11,10 @@ __copyright__ = "Copyright (C) 2013 David Braam - Released under terms of the AG
 from optparse import OptionParser
 
 from Cura.util import profile
+from Cura.util import resources
+import os
+import zipfile
+import shutil
 
 def main():
 	"""
@@ -79,6 +83,51 @@ def main():
 					break
 				f.write(data)
 		print 'GCode file saved : %s' % options.output
+		f.close()
+
+		if profile.getMachineSetting('gcode_flavor') == 'Makerbot 5th Gen':
+			#create path for the files
+			basepath = os.path.splitext(os.path.splitext(options.output)[0])[0]
+			outputdir = basepath+'.tmp/'
+			jsonpath = outputdir+'print.jsontoolpath'
+			metapath = outputdir+'meta.json'
+			zippath = basepath+'.makerbot'
+
+			#create tmp folder
+			if not os.path.exists(outputdir):
+				os.makedirs(outputdir)
+
+			datain = open(options.output,'r')
+			jsonout = open(jsonpath, 'wb')
+			metaout = open(metapath, 'wb')
+			writemeta = False
+			for line in datain.readlines():
+				if line != '\n':
+					if writemeta == True:
+						metaout.write(line)
+					else:
+						jsonout.write(line)
+				if line == ']\n':
+					writemeta = True
+			datain.close()
+			jsonout.close()
+			metaout.close()
+
+			#create zip archive and add files
+			zipf = zipfile.ZipFile(zippath, 'w')
+			zipf.write(jsonpath,'print.jsontoolpath')
+			zipf.write(metapath,'meta.json')
+			#add default thumbnails to zip archive
+			zipf.write(os.path.normpath(os.path.join(resources.resourceBasePath, 'makerbot5thgen', 'thumbnail_55x40.png')),'thumbnail_55x40.png')
+			zipf.write(os.path.normpath(os.path.join(resources.resourceBasePath, 'makerbot5thgen', 'thumbnail_110x80.png')),'thumbnail_110x80.png')
+			zipf.write(os.path.normpath(os.path.join(resources.resourceBasePath, 'makerbot5thgen', 'thumbnail_320x200.png')),'thumbnail_320x200.png')
+			zipf.close()
+			#remove tmp folder
+			shutil.rmtree(outputdir)
+			print 'Makerbot file saved : %s' % zippath
+
+			#get rid of .gcode file
+			os.remove(options.output)
 
 		engine.cleanup()
 	else:
